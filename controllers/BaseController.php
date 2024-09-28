@@ -16,5 +16,11 @@ abstract class BaseController {
         header("Location: index.php?route=" . $route);
         exit;
     }
+
+    protected function auth_render($view, $data = [], $title = 'AMS') {
+        extract($data);  // Extract variables from the data array
+        $content = 'views/' . $view . '.php';  // Define the path to the view file
+        include('views/layouts/auth-layout.php');  // Include the layout file
+    }
 }
 ?>

@@ -9,6 +9,17 @@ $routes = [
         'deleteStudent' => 'StudentController@delete',
         'updateStudent' => 'StudentController@update',
     ],
+
+    'auth' => [
+        'register' => 'AuthController@register',
+        'login' => 'AuthController@login',
+        'fetchProfile' => 'AuthController@fetch',
+        'updateProfile' => 'AuthController@update',
+    ],
+
+    '/' => [
+        'logim' => 'AuthController@login',
+    ],
     
     // Add more routes here
 ];
@@ -38,8 +49,14 @@ if (isset($routes[$routeParts[0]][$methodName])) {
         $params[] = $_GET['id'];
     }
     call_user_func_array([$controller, $methodName], $params);
-} else {
+} elseif($route === '/'){
+    require_once 'controllers/AuthController.php';
+    $_controller = new AuthController();
+    $_controller->login();
+}
+else {
+    include('views/authentication/not-found.php'); 
+    die();
     // 404 Not Found
-    echo 'Route not found:' . $methodName;
 }
 ?>

@@ -61,7 +61,6 @@ class StudentController extends BaseController {
     
         $this->render('students/edit_student', ['student' => $student], 'Edit Student');
     }
-    
 
     // Handle student deletion
     public function deleteStudent($id) {
