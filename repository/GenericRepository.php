@@ -1,7 +1,8 @@
 <?php
 // GenericRepository.php
 
-require_once 'config/Database.php';
+require_once 'config/db_config.php';
+require_once 'BaseRepository.php';
 
 abstract class GenericRepository implements BaseRepository {
     protected $db;

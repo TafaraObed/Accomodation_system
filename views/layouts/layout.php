@@ -1,3 +1,12 @@
+<?php 
+ function route($route, $id=null){  
+    if($id){
+        return "?route=$route&id=$id";
+    }
+    return "?route=" . $route;
+ }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

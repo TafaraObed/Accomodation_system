@@ -1,5 +1,5 @@
 <?php
-require_once 'repositories/StudentRepository.php';
+require_once 'repository/StudentRepository.php';
 require_once 'models/Student.php';
 
 class StudentService {

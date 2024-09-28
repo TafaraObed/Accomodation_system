@@ -6,7 +6,7 @@ require_once 'models/Student.php';
 
 class StudentRepository extends GenericRepository {
     public function __construct() {
-        parent::__construct('student', 'student_id', Student::class);  // Pass the model class
+        parent::__construct('students', 'id', Student::class);  // Pass the model class
     }
 }
 ?>

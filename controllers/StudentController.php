@@ -1,5 +1,5 @@
 <?php
-require_once 'services/StudentService.php';
+require_once 'services/StudentServices.php';
 require_once 'controllers/BaseController.php'; // Include the BaseController
 
 class StudentController extends BaseController {
@@ -12,7 +12,7 @@ class StudentController extends BaseController {
     // List all students
     public function listStudents() {
         $students = $this->studentService->getAllStudents();
-        $this->render('students/list_students', ['students' => $students], 'Student List');
+        $this->render('students/index', ['students' => $students], 'Student List');
     }
 
     // Show a student by ID
@@ -25,18 +25,15 @@ class StudentController extends BaseController {
     public function createStudent() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $student = new Student(
+                null,
                 $_POST['firstName'],
                 $_POST['lastName'],
                 $_POST['regNumber'],
-                $_POST['program'],
                 $_POST['phoneNumber'],
                 $_POST['emailAddress'],
-                $_POST['physicalAddress'],
-                $_POST['assessorId'],
-                $_POST['supervisorId']
             );
             $this->studentService->createStudent($student);
-            header("Location: /students");
+            $this->listStudents();
             exit;  // Add exit after redirect
         }
         $this->render('students/add_student', [], 'Add Student');
@@ -48,26 +45,18 @@ class StudentController extends BaseController {
         
         // Check if the student was found
         if ($student === null) {
-            // Handle the case where the student is not found
-            // For example, redirect to the students list with an error message
-            header("Location: /students?error=Student not found");
-            exit;
+            $this->redirect("student");
         }
     
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $student->firstName = $_POST['firstName'];
             $student->lastName = $_POST['lastName'];
             $student->regNumber = $_POST['regNumber'];
-            $student->program = $_POST['program'];
             $student->phoneNumber = $_POST['phoneNumber'];
             $student->emailAddress = $_POST['emailAddress'];
-            $student->physicalAddress = $_POST['physicalAddress'];
-            $student->assessorId = $_POST['assessorId'];
-            $student->supervisorId = $_POST['supervisorId'];
     
             $this->studentService->updateStudent($student, $id); // Update the student
-            header("Location: /students");
-            exit;  // Add exit after redirect
+            $this->redirect("student");
         }
     
         $this->render('students/edit_student', ['student' => $student], 'Edit Student');
@@ -77,8 +66,7 @@ class StudentController extends BaseController {
     // Handle student deletion
     public function deleteStudent($id) {
         $this->studentService->deleteStudent($id);
-        header("Location: /students");
-        exit;  // Add exit after redirect
+        $this->redirect("student"); 
     }
 }
 ?>

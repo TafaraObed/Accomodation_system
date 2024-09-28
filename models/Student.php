@@ -4,36 +4,28 @@
 require_once 'Model.php';
 
 class Student extends Model {
+    public $id;
     public $firstName;
     public $lastName;
     public $regNumber;
-    public $program;
     public $phoneNumber;
     public $emailAddress;
-    public $physicalAddress;
-    public $assessorId;
-    public $supervisorId;
 
     public function __construct(
+        $id,
         $firstName,
         $lastName,
         $regNumber,
-        $program,
         $phoneNumber,
-        $emailAddress,
-        $physicalAddress,
-        $assessorId,
-        $supervisorId
+        $emailAddress
     ) {
+        $this->id = $id;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->regNumber = $regNumber;
-        $this->program = $program;
         $this->phoneNumber = $phoneNumber;
         $this->emailAddress = $emailAddress;
-        $this->physicalAddress = $physicalAddress;
-        $this->assessorId = $assessorId;
-        $this->supervisorId = $supervisorId;
+
     }
 
     // // Optional: Method to convert the object to an array (if needed)
