@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Define routes
 $routes = [
     // shoud be named exactly like the controller name
@@ -18,7 +18,7 @@ $routes = [
     ],
 
     '/' => [
-        'logim' => 'AuthController@login',
+        'login' => 'AuthController@login',
     ],
     
     // Add more routes here
