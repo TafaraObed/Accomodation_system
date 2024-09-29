@@ -6,9 +6,11 @@ require_once 'models/User.php';
 
 class UserRepository extends GenericRepository {
     public function __construct() {
-        parent::__construct('users', 'user_id', User::class);
+        parent::__construct('users', 'id', User::class);
     }
 
+    // Return acutal values instead of object
+    // because object will hash the password
     public function findByEmail($email) {
         $query = "SELECT * FROM {$this->table} WHERE email = ?";
         $stmt = $this->connection->prepare($query);
@@ -16,7 +18,8 @@ class UserRepository extends GenericRepository {
         $stmt->execute();
         
         $data = $stmt->get_result()->fetch_assoc();
-        return $data ? $this->createObject($data) : null;
+        return $data;
+        // return $data ? $this->createObject($data) : null;
     }
 }
 ?>

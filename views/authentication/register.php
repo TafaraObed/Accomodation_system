@@ -1,6 +1,6 @@
 <h4>New here?</h4>
 <h6 class="fw-light">Signing up is easy. It only takes a few steps</h6>
-<form class="pt-3">
+<form class="pt-3" method="POST" action="<?=route('auth/register')?>">
   <div class="form-group">
     <input type="text" class="form-control form-control-lg" id="email"  name="email" placeholder="Email">
   </div>
@@ -17,8 +17,8 @@
     </div>
   </div>
   <div class="mt-3 d-grid gap-2">
-    <a class="btn btn-block btn-primary btn-lg fw-medium auth-form-btn" href="../../index.html">SIGN UP</a>
+    <button type="submit" class="btn btn-block btn-primary btn-lg fw-medium auth-form-btn">SIGN UP</button>
   </div>
-  <div class="text-center mt-4 fw-light"> Already have an account? <a href="login.html" class="text-primary">Login</a>
+  <div class="text-center mt-4 fw-light"> Already have an account? <a href="<?=route('auth/login')?>" class="text-primary">Login</a>
   </div>
 </form>

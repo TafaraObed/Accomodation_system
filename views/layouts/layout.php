@@ -1,4 +1,5 @@
 <?php 
+  $loggedUser = $_COOKIE['email'];
  function route($route, $id=null){  
     if($id){
         return "?route=$route&id=$id";

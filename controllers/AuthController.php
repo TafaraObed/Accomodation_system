@@ -10,59 +10,71 @@ class AuthController extends BaseController {
     }
 
     public function register() {
-        // if ($_POST) {
-        //     $first_name = $_POST['first_name'];
-        //     $last_name = $_POST['last_name'];
-        //     $email = $_POST['email'];
-        //     $password = $_POST['password'];
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $confirmPassword = $_POST['confirmPassword'];
 
-        //     if ($this->userService->registerUser($first_name, $last_name, $email, $password)) {
-        //         // Redirect to login or profile page
-        //         header('Location: /users/login');
-        //     } else {
-        //         // Handle registration error
-        //     }
-        // }
+            $user = new User(
+                null,
+                $_POST['email'],
+                $_POST['password'],
+            );
+
+            if ($user->verifyPassword($confirmPassword)){
+                if($this->userService->register($user)){
+                    session_start();
+                    // $_SESSION['user_email'] = $user->email; 
+                    setcookie('email', $user->email, time() + 3600); // Store user ID in session
+                    $this->redirect('student'); // if login is successful redirect to dashboard
+                }
+            }
+            else{
+                // Passwords do not match
+                echo "Passwords do not match";
+            }
+        }
         $this->auth_render('authentication/register', [], 'Register');
     }
 
     public function login() {
-        // if ($_POST) {
-        //     $email = $_POST['email'];
-        //     $password = $_POST['password'];
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        //     $user = $this->userService->loginUser($email, $password);
-        //     if ($user) {
-        //         // Set session or JWT token for authenticated user
-        //         $_SESSION['user_id'] = $user->user_id; // Store user ID in session
-        //         header('Location: /users/profile?id=' . $user->user_id);
-        //     } else {
-        //         // Handle login error (invalid credentials)
-        //     }
-        // }
+            $user_data = $this->userService->login($_POST['email'],$_POST['password']);
+
+            if (!empty($user_data)) {
+                // Set session or JWT token for authenticated user
+                session_start();
+                // $_SESSION['user_email'] = $user_data["email"]; 
+                setcookie('email', $user_data["email"], time() + 3600); // Store user ID in session
+                $this->redirect("student");
+            } else {
+                // Handle login error (invalid credentials)
+                echo "Wrong username or password";
+            }
+        }
+
         $this->auth_render('authentication/login', [], 'Login'); //9140008901936
     }
 
-    public function fetchProfile($user_id) {
-        $user = $this->userService->fetchUserProfile($user_id);
-        $this->render('users/profile', ['user' => $user], 'Profile');
-    }
+    // public function fetchProfile($user_id) {
+    //     $user = $this->userService->fetchUserProfile($user_id);
+    //     $this->render('users/profile', ['user' => $user], 'Profile');
+    // }
 
-    public function updateProfile() {
-        if ($_POST) {
-            $user_id = $_POST['user_id'];
-            $first_name = $_POST['first_name'];
-            $last_name = $_POST['last_name'];
-            $email = $_POST['email'];
+    // public function updateProfile() {
+    //     if ($_POST) {
+    //         $user_id = $_POST['user_id'];
+    //         $first_name = $_POST['first_name'];
+    //         $last_name = $_POST['last_name'];
+    //         $email = $_POST['email'];
 
-            if ($this->userService->updateUserProfile($user_id, $first_name, $last_name, $email)) {
-                // Redirect to the updated profile or show success message
-                header("Location: /users/profile?id={$user_id}");
-            } else {
-                // Handle update error
-            }
-        }
-    }
+    //         if ($this->userService->updateUserProfile($user_id, $first_name, $last_name, $email)) {
+    //             // Redirect to the updated profile or show success message
+    //             header("Location: /users/profile?id={$user_id}");
+    //         } else {
+    //             // Handle update error
+    //         }
+    //     }
+    // }
 }
 
 ?>
