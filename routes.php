@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Define routes
 $routes = [
     // shoud be named exactly like the controller name
