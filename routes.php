@@ -18,7 +18,7 @@ $routes = [
     ],
 
     '/' => [
-        'logim' => 'AuthController@login',
+        'login' => 'AuthController@login',
     ],
     
     // Add more routes here
