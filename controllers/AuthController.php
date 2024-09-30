@@ -1,7 +1,7 @@
-<?php 
+<?php
 require_once 'services/UserService.php';
 require_once 'controllers/BaseController.php';
-// UserController.php
+
 class AuthController extends BaseController {
     private $userService;
 
@@ -12,69 +12,63 @@ class AuthController extends BaseController {
     public function register() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $confirmPassword = $_POST['confirmPassword'];
-
-            $user = new User(
-                null,
-                $_POST['email'],
-                $_POST['password'],
-            );
-
-            if ($user->verifyPassword($confirmPassword)){
-                if($this->userService->register($user)){
-                    session_start();
-                    // $_SESSION['user_email'] = $user->email; 
-                    setcookie('email', $user->email, time() + 3600); // Store user ID in session
-                    $this->redirect('student'); // if login is successful redirect to dashboard
-                }
+    
+            // Validate inputs
+            if (empty($_POST['email']) || empty($_POST['password']) || empty($confirmPassword)) {
+                $this->auth_render('authentication/register', ['error' => 'All fields are required.'], 'Register');
+                return;
             }
-            else{
-                // Passwords do not match
-                echo "Passwords do not match";
+    
+            if ($_POST['password'] !== $confirmPassword) {
+                $this->auth_render('authentication/register', ['error' => 'Passwords do not match.'], 'Register');
+                return;
+            }
+    
+            $user = new User(null, $_POST['email'], $_POST['password']);
+    
+            // Register the user and redirect with a message
+            if ($this->userService->register($user)) {
+                session_start();
+                $_SESSION['user_email'] = $user->email;
+                $this->redirect('student/listStudents', null, 'Registration successful. Welcome!');
+            } else {
+                $this->auth_render('authentication/register', ['error' => 'Registration failed. Try again.'], 'Register');
             }
         }
+    
         $this->auth_render('authentication/register', [], 'Register');
     }
-
+    
     public function login() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            $user_data = $this->userService->login($_POST['email'],$_POST['password']);
-
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+    
+            // Validate inputs
+            if (empty($email) || empty($password)) {
+                $this->auth_render('authentication/login', ['error' => 'Email and Password are required.'], 'Login');
+                return;
+            }
+    
+            $user_data = $this->userService->login($email, $password);
+    
             if (!empty($user_data)) {
-                // Set session or JWT token for authenticated user
+                // Set session for authenticated user
                 session_start();
-                // $_SESSION['user_email'] = $user_data["email"]; 
-                setcookie('email', $user_data["email"], time() + 3600); // Store user ID in session
-                $this->redirect("student");
+                $_SESSION['user_email'] = $user_data['email'];
+                $this->redirect('student/listStudents', null, 'Login successful. Welcome back!');
             } else {
-                // Handle login error (invalid credentials)
-                echo "Wrong username or password";
+                // Handle login error
+                $this->auth_render('authentication/login', ['error' => 'Invalid credentials. Please try again.'], 'Login');
             }
         }
-
-        $this->auth_render('authentication/login', [], 'Login'); //9140008901936
+    
+        $this->auth_render('authentication/login', [], 'Login');
     }
 
-    // public function fetchProfile($user_id) {
-    //     $user = $this->userService->fetchUserProfile($user_id);
-    //     $this->render('users/profile', ['user' => $user], 'Profile');
-    // }
-
-    // public function updateProfile() {
-    //     if ($_POST) {
-    //         $user_id = $_POST['user_id'];
-    //         $first_name = $_POST['first_name'];
-    //         $last_name = $_POST['last_name'];
-    //         $email = $_POST['email'];
-
-    //         if ($this->userService->updateUserProfile($user_id, $first_name, $last_name, $email)) {
-    //             // Redirect to the updated profile or show success message
-    //             header("Location: /users/profile?id={$user_id}");
-    //         } else {
-    //             // Handle update error
-    //         }
-    //     }
-    // }
+    public function logout() {
+        session_start();
+        session_destroy();
+        $this->redirect('login', null, 'You have been logged out successfully.');
+    }
 }
-
-?>
